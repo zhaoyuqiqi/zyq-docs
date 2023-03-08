@@ -54,7 +54,10 @@ export default defineUserConfig({
         ],
       },
       { text: "B站主页", link: "https://space.bilibili.com/279282087" },
-      { text: "掘金主页", link: "https://juejin.cn/user/3447712806348557/posts" },
+      {
+        text: "掘金主页",
+        link: "https://juejin.cn/user/3447712806348557/posts",
+      },
       // 下拉列表的配置
       // {
       //   text: "Languages",
@@ -65,6 +68,6 @@ export default defineUserConfig({
       // },
     ],
     logo: "/images/header-logo.jpg",
-  
   }),
+  base: "/zyq-docs/",
 });
