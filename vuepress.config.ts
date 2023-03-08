@@ -1,5 +1,5 @@
 import { defineUserConfig, defaultTheme } from "vuepress";
-
+import { searchPlugin } from "@vuepress/plugin-search";
 export default defineUserConfig({
   lang: "zh-CN",
   title: "爱哭的赵一一",
@@ -68,6 +68,9 @@ export default defineUserConfig({
       // },
     ],
     logo: "/images/header-logo.jpg",
+    notFound: ["页面找不到啦~  去首页看看吧!"],
+    backToHome: "返回首页",
   }),
   base: "/zyq-docs/",
+  plugins: [searchPlugin()],
 });

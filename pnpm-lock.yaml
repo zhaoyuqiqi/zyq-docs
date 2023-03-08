@@ -2,11 +2,15 @@ lockfileVersion: 5.4
 
 specifiers:
   '@vuepress/client': 2.0.0-beta.61
+  '@vuepress/plugin-search': 2.0.0-beta.61
+  i: ^0.3.7
   vue: ^3.2.47
   vuepress: 2.0.0-beta.61
 
 devDependencies:
   '@vuepress/client': 2.0.0-beta.61
+  '@vuepress/plugin-search': 2.0.0-beta.61
+  i: 0.3.7
   vue: 3.2.47
   vuepress: 2.0.0-beta.61_zcwlgd45apez724duilctoxt4u
 
@@ -666,6 +670,20 @@ packages:
       - supports-color
     dev: true
 
+  /@vuepress/plugin-search/2.0.0-beta.61:
+    resolution: {integrity: sha512-gcyl3C7WBCC38dp42q6F8s0S/yKjm/yHqmpqtABxwFG+6IhZne0qFI9Q2CaaG/UGSa9UE0xVxeKfcBE1XIyX9A==}
+    dependencies:
+      '@vuepress/client': 2.0.0-beta.61
+      '@vuepress/core': 2.0.0-beta.61
+      '@vuepress/shared': 2.0.0-beta.61
+      '@vuepress/utils': 2.0.0-beta.61
+      chokidar: 3.5.3
+      vue: 3.2.47
+      vue-router: 4.1.6_vue@3.2.47
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@vuepress/plugin-theme-data/2.0.0-beta.61:
     resolution: {integrity: sha512-drPLGbaXqXnHsuFHn6FolbqdRIxJzla1+10b3cKnsslatRbSPjKWos4Eri3xzgzEIC5TotPwTeT25gDRMpW8Sw==}
     dependencies:
@@ -1112,6 +1130,11 @@ packages:
   /human-signals/4.3.0:
     resolution: {integrity: sha512-zyzVyMjpGBX2+6cDVZeFPCdtOtdsxOeseRhB9tkQ6xXmGUNrcnBzdEKPy3VPNYz+4gy1oukVOXcrJCunSyc6QQ==}
     engines: {node: '>=14.18.0'}
+    dev: true
+
+  /i/0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
     dev: true
 
   /ieee754/1.2.1:
