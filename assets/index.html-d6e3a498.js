@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-6474d7ab","path":"/skill/promise/","title":"Promise","lang":"zh-CN","frontmatter":{},"headers":[],"git":{"updatedTime":1678291395000,"contributors":[{"name":"zhaoyuqiqi","email":"1940988349@qq.com","commits":1}]},"filePathRelative":"skill/promise/index.md"}');export{e as data};

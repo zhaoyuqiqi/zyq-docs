@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-47a65476","path":"/skill/messy/","title":"杂项","lang":"zh-CN","frontmatter":{},"headers":[],"git":{"updatedTime":1678291395000,"contributors":[{"name":"zhaoyuqiqi","email":"1940988349@qq.com","commits":1}]},"filePathRelative":"skill/messy/index.md"}');export{e as data};

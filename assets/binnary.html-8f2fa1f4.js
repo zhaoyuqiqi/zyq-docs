@@ -1,0 +1,1 @@
+const t=JSON.parse('{"key":"v-e9b63ede","path":"/algorithm/binnary.html","title":"二分法","lang":"zh-CN","frontmatter":{},"headers":[],"git":{"updatedTime":1678291395000,"contributors":[{"name":"zhaoyuqiqi","email":"1940988349@qq.com","commits":1}]},"filePathRelative":"algorithm/binnary.md"}');export{t as data};
