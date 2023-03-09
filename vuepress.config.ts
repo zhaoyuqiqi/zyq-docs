@@ -1,11 +1,14 @@
 import { defineUserConfig, defaultTheme } from "vuepress";
 import { searchPlugin } from "@vuepress/plugin-search";
+const baseAddress = "/zyq-docs/";
 export default defineUserConfig({
   lang: "zh-CN",
   title: "爱哭的赵一一",
   description:
     "爱哭的赵一一前端个人学习站点，总结个人学习历程与经验，介绍两大框架React、Vue和各类常见算法（排序算法、最长递增子序列、优先队列）等等。以及前端开发中的奇技淫巧，帮助你提升自身能力获取高薪工作",
-  head: [["link", { rel: "icon", href: "/images/header-logo.jpg" }]],
+  head: [
+    ["link", { rel: "icon", href: `${baseAddress}images/header-logo.jpg` }],
+  ],
   theme: defaultTheme({
     navbar: [
       { text: "主页", link: "/" },
@@ -77,6 +80,6 @@ export default defineUserConfig({
     notFound: ["页面找不到啦~  去首页看看吧!"],
     backToHome: "返回首页",
   }),
-  base: "/zyq-docs/",
+  base: baseAddress,
   plugins: [searchPlugin()],
 });
