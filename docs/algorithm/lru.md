@@ -14,3 +14,41 @@
 
 ## 算法实现
 
+```ts
+class LRUCache {
+  /**
+   * 初始化一个cache
+   */
+  private cache = new Map();
+  constructor(private capacity: number) {}
+  /**
+   * 缓存的取
+   */
+  get(key: number): number {
+    // 当取的key不存在时返回 -1
+    if (!this.cache.has(key)) return -1;
+    // 如果取的key存在那么就删除原来key的位置，
+    // 在最新的位置重新存一下
+    const val = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, val);
+    return val;
+  }
+  /**
+   * 缓存的存
+   */
+  put(key: number, value: number): void {
+    // 如果缓存中存在当前key那么就删除这个key 然后再存
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    } else if (this.cache.size >= this.capacity) {
+      // 这里是缓存中不存在当前key 并且超出最大缓存条数那么就删除第一个key
+      // map的keys方法有序的返回存进去的所有的key，是一个迭代器
+      const firstKey = this.cache.keys().next().value;
+      this.cache.delete(firstKey);
+    }
+    // 上述两个都未命中时则表示是新的key且没有超过最大缓存条数直接存即可
+    this.cache.set(key, value);
+  }
+}
+```
