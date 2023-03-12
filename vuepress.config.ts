@@ -21,6 +21,14 @@ export default defineUserConfig({
         link: "/react/",
       },
       {
+        text: "Typescript",
+        link: "/typescript/",
+      },
+      {
+        text: "Git",
+        link: "/git/",
+      },
+      {
         text: "奇技淫巧",
         children: [
           {
@@ -59,6 +67,10 @@ export default defineUserConfig({
           {
             text: "堆",
             link: "/algorithm/heap/",
+          },
+          {
+            text: "LRU缓存",
+            link: "/algorithm/lru/",
           },
         ],
       },
