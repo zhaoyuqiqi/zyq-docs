@@ -36,7 +36,7 @@ export default defineUserConfig({
             link: "/skill/promise/",
           },
           {
-            text: "杂项",
+            text: "杂七杂八",
             link: "/skill/messy/",
           },
         ],
