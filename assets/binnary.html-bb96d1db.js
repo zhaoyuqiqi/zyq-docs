@@ -1,0 +1,1 @@
+import{_ as t,p as a,q as n,R as e,t as r}from"./framework-5866ffd3.js";const c={},s=e("h1",{id:"二分法",tabindex:"-1"},[e("a",{class:"header-anchor",href:"#二分法","aria-hidden":"true"},"#"),r(" 二分法")],-1),o=[s];function _(d,i){return a(),n("div",null,o)}const l=t(c,[["render",_],["__file","binnary.html.vue"]]);export{l as default};
