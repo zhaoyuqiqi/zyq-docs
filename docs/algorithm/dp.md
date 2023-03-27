@@ -139,3 +139,50 @@
   ```
 
 ## 零钱兑换（硬币找零）
+
+给你一个整数数组 coins ，表示不同面额的硬币；以及一个整数 amount ，表示总金额。
+
+计算并返回可以凑成总金额所需的 最少的硬币个数 。如果没有任何一种硬币组合能组成总金额，返回 -1 。
+
+你可以认为每种硬币的数量是无限的。
+
+示例 1：
+
+输入：coins = [1, 2, 5], amount = 11
+输出：3
+解释：11 = 5 + 5 + 1
+示例 2：
+
+输入：coins = [2], amount = 3
+输出：-1
+示例 3：
+
+输入：coins = [1], amount = 0
+输出：0
+
+提示：
+
+1 <= coins.length <= 12
+1 <= coins[i] <= 2^31 - 1
+0 <= amount <= 10^4
+
+- 我们的思路如下：
+  - 首先，我们声明一个 dp 数组，其中 dp[i]表示 i 元钱需要的最少硬币数，为了表示方便，我们初始化一个 i + 1 长度的数组，然后我们使用 Infinity 来填充数组。
+  - dp[0]为 0。
+  - 接下来我们开始循环，外层循环是硬币数 i，内层循环是要兑换的钱数 j，外层循环索引下标从 0 到硬币数的个数 -1，内层循环从当前的硬币金额开始（因为用大额的硬币永远无法构成小的钱数），一直到要兑换的金额数目。
+  - 递推公式如下：
+    - dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1);
+- 代码实现如下：
+
+  ```ts
+  function coinChange(coins: number[], amount: number): number {
+    const dp = new Array(amount + 1).fill(Infinity);
+    dp[0] = 0;
+    for (let i = 0; i < coins.length; i++) {
+      for (let j = coins[i]; j <= amount; j++) {
+        dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1);
+      }
+    }
+    return dp[amount] === Infinity ? -1 : dp[amount];
+  }
+  ```
