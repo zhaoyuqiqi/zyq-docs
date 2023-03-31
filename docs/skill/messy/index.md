@@ -127,3 +127,38 @@
   📢：注意一定要有退出条件，避免无限递归调用。
 
 数据分批上屏也可以使用上文提到的`requestAnimationFrame`进行下一帧上屏，可以减小页面首屏首帧的渲染压力。
+
+## 设置较小字号（小于 12px）的字体
+
+web 中可设置的字体大小最小为 12px，无法设置小于 12px 的字体，目前大多数实现小字号的字体有以下常用两个方案
+
+- 以我们需要设置 9px 的字体为例
+
+### 使用 transform 缩放
+
+```css
+.ninepx-div {
+  font-size: 12px;
+  transform: scale(0.75);
+  color: red;
+}
+```
+
+我们可以设置字体大小为 12px 然后使用`transform:scale(0.75)`来让我们的元素进行缩放 3/4 以达到我们的 9px，但是该方案有个缺点就是元素的体积会塌陷，即盒子的大小会一起缩放，不会只缩放字体。
+
+### 使用字体的 size-adjust 属性
+
+```css
+@font-face {
+  font-family: ninepx;
+  src: url('xxxx.ttf') format('truetype');
+  size-adjust: 75%;
+}
+.ninepx-div {
+  font-size: 12px;
+  font-family: ninepx;
+  color: red;
+}
+```
+
+我们引入字体，然后设置 size-adjust 缩放比例，在我们需要缩放的文字上面我们可以使用该字体，然后设置相应的 12px 即可，因为缩放比例为 3/4 所以当我们设置 12px 时，该字体的展示大小就是 9px，该方案的好处是不会造成盒子的塌陷，盒子大小不会进行缩放，只会缩放字体。
