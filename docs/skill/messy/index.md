@@ -162,3 +162,61 @@ web 中可设置的字体大小最小为 12px，无法设置小于 12px 的字�
 ```
 
 我们引入字体，然后设置 size-adjust 缩放比例，在我们需要缩放的文字上面我们可以使用该字体，然后设置相应的 12px 即可，因为缩放比例为 3/4 所以当我们设置 12px 时，该字体的展示大小就是 9px，该方案的好处是不会造成盒子的塌陷，盒子大小不会进行缩放，只会缩放字体。
+
+## 设计模式
+
+### 单例模式
+
+```ts
+// 单例模式
+class Person {
+  static instance: Person;
+  constructor(public name) {
+    if (Person.instance) {
+      return Person.instance;
+    }
+    Person.instance = this;
+  }
+  sayHello() {
+    console.log(`hello ,我的名字是${this.name}`);
+  }
+}
+```
+
+### 观察者模式、发布订阅
+
+```ts
+class PubAndSub {
+  map = new Map<string, Set<(data: any) => void>>();
+  subscribe(event: string, callback: (data: any) => void) {
+    if (!this.map.has(event)) {
+      this.map.set(event, new Set());
+    }
+    const dep = this.map.get(event)!;
+    dep.add(callback);
+  }
+  publish(event: string, data: any) {
+    if (this.map.has(event)) {
+      const dep = this.map.get(event)!;
+      dep.forEach(callback => {
+        callback(data);
+      });
+    }
+  }
+  remove(event: string, callback?: (data: any) => void) {
+    if (this.map.has(event)) {
+      const dep = this.map.get(event)!;
+      if (callback) {
+        if (dep.has(callback)) {
+          dep.delete(callback);
+        }
+      } else {
+        dep.clear();
+      }
+    }
+  }
+  removeAll() {
+    this.map.clear();
+  }
+}
+```
