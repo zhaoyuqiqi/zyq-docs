@@ -186,3 +186,85 @@
     return dp[amount] === Infinity ? -1 : dp[amount];
   }
   ```
+
+## 三角形最小路径和
+
+给定一个三角形 triangle ，找出自顶向下的最小路径和。
+
+每一步只能移动到下一行中相邻的结点上。相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。也就是说，如果正位于当前行的下标 i ，那么下一步可以移动到下一行的下标 i 或 i + 1 。
+
+示例 1：
+
+输入：triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]
+输出：11
+解释：如下面简图所示：
+
+![堆](/images/三角形最小路径和.jpeg)
+
+自顶向下的最小路径和为 11（即，2 + 3 + 5 + 1 = 11）。
+示例 2：
+
+输入：triangle = [[-10]]
+输出：-10
+
+提示：
+
+1 <= triangle.length <= 200
+triangle[0].length == 1
+triangle[i].length == triangle[i - 1].length + 1
+-10^4 <= triangle[i][j] <= 10^4
+
+进阶：
+
+你可以只使用 O(n) 的额外空间（n 为三角形的总行数）来解决这个问题吗？
+
+- 我们思路如下：
+
+  - 自上而下：
+    - 首先，我们看到最小路径和以及三角形的样子，我们很容易想到使用动态规划来解决问题，我们先来初始化一个 dp 二維数组，其中 dp[i][j]表示第 i-1 层，第 j-1 个数。然后使用 Infinity 进行填充，方便后续取最小值。其中 dp[0][0]初始值就是我们的 triangle 数组的第一项中的第一个值，也就是三角形的顶点的值。
+    - 接下来我们开始逐层遍历，外层循环从 1 开始即可，一直遍历到最后一层，内层循环从 0 开始一直遍历到当前层的末尾。
+    - 然后我们在循环内部开始寻找递推公式，我们可以看到第 i 层的和都是由 i-1 层过来的，我们还发现第 i 层第 j 个的规律如下：
+      - 当 j 为 0 也就是第一个时，当前 dp[i][j]的值就是 dp[i-1][j]的值加上当前的三角形位置的值也就是 triangle[i][j]；
+      - 当 j 为最后一个时，dp[i][j]的值就是 dp[i-1][j-1]的值加上当前位置的值 triangle[i][j]；
+      - 其他情况下也就是 j 在中间位置，那么 dp[i][j] 的值就是 dp[i-1][j-1]与 dp[i-1][j]的较小值再加上当前位置的值 triangle[i][j]；
+    - 最后我们返回 dp 数组最后一层中的最小值即可
+    - 代码实现如下：
+    ```ts
+    function minimumTotal(triangle: number[][]): number {
+      const dp = new Array(triangle.length).fill([]);
+      for (let m = 1; m <= triangle.length; m++) {
+        dp[m - 1] = new Array(m).fill(Infinity);
+      }
+      dp[0][0] = triangle[0][0];
+      for (let i = 1; i < triangle.length; i++) {
+        for (let j = 0; j < triangle[i].length; j++) {
+          if (j === 0) {
+            dp[i][j] = dp[i - 1][j] + triangle[i][j];
+          } else if (j === triangle[i].length - 1) {
+            dp[i][j] = dp[i - 1][j - 1] + triangle[i][j];
+          } else {
+            dp[i][j] = Math.min(dp[i - 1][j - 1], dp[i - 1][j]) + triangle[i][j];
+          }
+        }
+      }
+      return Math.min(...dp[triangle.length - 1]);
+    }
+    ```
+  - 我们还有进阶的方法，自下而上：
+    - 首先，我们仍然是初始化 dp 数组，这次我们只需要一个长度为三角形最后一层的长度的数组即可，也就是长度为 triangle 数组的长度。其中 dp[i]数组表示数组第 i 层的最小值。
+    - 然后我们使用 0 进行填充，然后我们外层循环从最后一层开始遍历至最上面一层；内层循环仍然是从第一个值遍历至最后一个值。
+    - 接下来我们开始寻找递推公式，我们很明显可以看出来，dp[j]的值就是 dp[j+1] 与 dp[j]的最小值加上当前的值 triangle[i][j]，当然，在最后一层的最后一个时，dp[j+1]的值取不到，取不到我们直接赋值当做 0 即可，当然我们也可以在初始化的时候将 dp 数组初始化长度多增加一位即可。
+    - 循环结束我们最后直接返回 dp[0]即可，此时 dp[0]就是最小的路径和。
+    - 代码实现如下：
+    ```ts
+    function minimumTotal(triangle: number[][]): number {
+      // 多增加1为长度，防止最后一层的最后一个值取j+1取不到
+      const dp = new Array(triangle.length + 1).fill(0);
+      for (let i = triangle.length - 1; i >= 0; i--) {
+        for (let j = 0; j < triangle[i].length; j++) {
+          dp[j] = Math.min(dp[j], dp[j + 1]) + triangle[i][j];
+        }
+      }
+      return dp[0];
+    }
+    ```
