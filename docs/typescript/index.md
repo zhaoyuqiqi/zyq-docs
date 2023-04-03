@@ -92,3 +92,5 @@ type B = N2S<100>;
 ```
 
 ## Typescript 类型体操
+
+### ReturnType
