@@ -94,3 +94,11 @@ type B = N2S<100>;
 ## Typescript 类型体操
 
 ### ReturnType
+
+- TS 内置类型 ReturnType 实现：
+  - 在实现 ReturnType 之前我们需要了解一下 infer 的使用，infer 是推断的意思，在这里我们可以将其当做一个占位符，当传入真实的类型时这个占位符就会变成我们真实的类型，此时就可以获取了。
+  - 我们实现 MyReturnType 类型，其中传入泛型 T，T 受函数类型的约束，当 T 进入条件判断为 true 分支时，T 的返回值是我们的推断类型 S，此时我们将 S 返回即可，当我们真实的类型传入后，如果条件判断走到了 true 分支那么我们的推断类型 S 就是我们真实的函数的类型。
+
+```ts
+type MyReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer S ? S : never;
+```
