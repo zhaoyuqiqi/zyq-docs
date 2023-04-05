@@ -96,9 +96,22 @@ type B = N2S<100>;
 ### ReturnType
 
 - TS 内置类型 ReturnType 实现：
+
   - 在实现 ReturnType 之前我们需要了解一下 infer 的使用，infer 是推断的意思，在这里我们可以将其当做一个占位符，当传入真实的类型时这个占位符就会变成我们真实的类型，此时就可以获取了。
   - 我们实现 MyReturnType 类型，其中传入泛型 T，T 受函数类型的约束，当 T 进入条件判断为 true 分支时，T 的返回值是我们的推断类型 S，此时我们将 S 返回即可，当我们真实的类型传入后，如果条件判断走到了 true 分支那么我们的推断类型 S 就是我们真实的函数的类型。
 
-```ts
-type MyReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer S ? S : never;
-```
+  ```ts
+  type MyReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer S ? S : never;
+  ```
+
+### Record
+
+- TS 内置类型 Record 实现：
+  - 想要实现 Record 之前我们需要了解一下该类型的作用，它可以用来声明一个对象，其中 key 是`Record<K,V>`的 K 类型, value 是其中的 V 类型，我们该如何实现呢？
+  - 首先我们需要了解 TS 类型系统中如何遍历对象的 key 以及如何让该 key 变为可选或是只读等操作。
+  - 在学会上述的知识后，我们开始实现如下：
+  ```ts
+  type MyRecord<K extends keyof any, V> = {
+    -readonly [P in K]+?: V;
+  };
+  ```
