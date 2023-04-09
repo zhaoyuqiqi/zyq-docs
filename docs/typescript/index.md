@@ -115,3 +115,30 @@ type B = N2S<100>;
     -readonly [P in K]+?: V;
   };
   ```
+
+### Omit
+
+- TS 内置类型 Omit 实现：
+
+  - Omit 类型是从某个对象中删除一个 key，我们可以使用两种思路进行手写。
+
+    - 使用内置类型 Exclude；
+    - 使用对象的重映射；
+
+  - 代码实现如下：
+
+  ```ts
+  type Obj = {
+    name: string;
+    age: number;
+  };
+
+  type MyOmit<O, K> = {
+    [P in Exclude<keyof O, K>]: P;
+  };
+  type MyOmit2<O, K> = {
+    [P in keyof O as P extends K ? never : P]: P;
+  };
+  type Test = MyOmit<Obj, 'age'>;
+  type Test2 = MyOmit2<Obj, 'age'>;
+  ```
