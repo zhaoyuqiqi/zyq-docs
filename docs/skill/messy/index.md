@@ -165,28 +165,45 @@ web 中可设置的字体大小最小为 12px，无法设置小于 12px 的字�
 
 ## 文本省略
 
-- 单行文本省略
+在此，记一个真的很 sb 的事情，在某个需求中有文本省略的需求，其中内容是运营配置的富文本，内容不可控，但是可以保证的是内容只有纯文本，需要一个展开收起的功能，此时我认为随便写一个多行文本省略就行了，于是快速敲下了如下的代码：
+
+```css
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+overflow: hidden;
+text-overflow: ellipsis;
+```
+
+就在我为自己的聪明才智感到自豪时，我发现在 pc 端 web 中正常的文本到了 ios 与 android 上就变得不正常了，文本开始出现省略号后面的文本上来盖在前面的文本上，导致文本出现重叠的效果。一时间不知道如何解决，刚开始我以为是小程序的 bug，在拉了几个老哥的 oncall 后，发现不是小程序的 bug，是 ios 与 android 上的问题，在 web 中也存在该现象。于是乎我就在想是不是我的用法不正确导致的，最终确定都问题的位置是在运营配置的富文本内容里面有块元素标签导致的。后来将所有的内部元素都转成行内元素问题得到了解决。
+以上就是血泪史，花了我半个下午的时间跟 oncall 老哥排查问题，算是一次教训。
+
+### 单行文本省略
+
+```css
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
+```
+
+### 多行文本省略
+
+- css 实现
   ```css
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   overflow: hidden;
-  white-space: nowrap;
+  text-overflow: ellipsis;
   ```
-- 多行文本省略
+- js 实现
+  - 挨个字符相加，每增加一个字符就判断一下外层容器的大小，直到外层容器的高度超出行数限制，然后用当前的文字拼接上`...`字符
 
-  - css 实现
-    ```css
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    ```
-  - js 实现
-    - 挨个字符相加，每增加一个字符就判断一下外层容器的大小，直到外层容器的高度超出行数限制，然后用当前的文字拼接上`...`字符
+### 📢 文本省略通过 css 实现必须遵循如下三个原则：
 
-- 📢 文本省略通过 css 实现必须遵循如下两个原则：
-  1. 外层盒子必须具有宽度（或隐式宽度，可以理解为通过继承父级宽度得到的）
-  2. css 要添加到离文本内容最近的块级 dom 上，否则在 pc 浏览器中可以正常展示，在 ios 与 android 中无法正常展示。会出现覆盖现象或者省略号消失的问题。
+- 外层盒子必须具有宽度（或隐式宽度，可以理解为通过继承父级宽度得到的）
+- **css 要添加到离文本内容最近的块级 dom 上，也就是说增加文本省略的元素内部必须全是行内标签！** 否则在 pc 浏览器中可以正常展示，在 ios 与 android 中无法正常展示。会出现覆盖现象或者省略号消失的问题。
+- **不要写高度！不要写高度！不要写高度！** 一定不要写死 height 或者 min-height 以及 max-height 等跟高度相关的属性。
 
 ## 设计模式
 
