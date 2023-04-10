@@ -163,6 +163,31 @@ web 中可设置的字体大小最小为 12px，无法设置小于 12px 的字�
 
 我们引入字体，然后设置 size-adjust 缩放比例，在我们需要缩放的文字上面我们可以使用该字体，然后设置相应的 12px 即可，因为缩放比例为 3/4 所以当我们设置 12px 时，该字体的展示大小就是 9px，该方案的好处是不会造成盒子的塌陷，盒子大小不会进行缩放，只会缩放字体。
 
+## 文本省略
+
+- 单行文本省略
+  ```css
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  ```
+- 多行文本省略
+
+  - css 实现
+    ```css
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    ```
+  - js 实现
+    - 挨个字符相加，每增加一个字符就判断一下外层容器的大小，直到外层容器的高度超出行数限制，然后用当前的文字拼接上`...`字符
+
+- 📢 文本省略通过 css 实现必须遵循如下两个原则：
+  1. 外层盒子必须具有宽度（或隐式宽度，可以理解为通过继承父级宽度得到的）
+  2. css 要添加到离文本内容最近的块级 dom 上，否则在 pc 浏览器中可以正常展示，在 ios 与 android 中无法正常展示。会出现覆盖现象或者省略号消失的问题。
+
 ## 设计模式
 
 ### 单例模式
