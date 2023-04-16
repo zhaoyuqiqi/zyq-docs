@@ -262,3 +262,36 @@ class PubAndSub {
   }
 }
 ```
+
+## 深拷贝
+
+- 使用 JSON
+  - 优点：简单直接，使用方便。
+  - 缺点：无法解决循环引用，无法深拷贝函数。
+  ```ts
+  JSON.parse(JSON.stringfy(obj));
+  ```
+- 使用递归
+  - 使用 cache 缓存上次递归调用过的数据，下次不需要递归即可直接取到值，解决了无限递归超出调用栈的问题。
+  ```ts
+  function deepCopy(obj: any, cache = new WeakMap()) {
+    if (typeof obj === 'object' && obj !== null) {
+      const isArray = Array.isArray(obj);
+      let temp = isArray ? [] : {};
+      //map缓存中是否存在当前对象或数组
+      if (cache.has(obj)) {
+        //如果存在那么直接返回当前的对象或数组
+        return obj;
+      }
+      //如果不存在那么就添加到缓存中
+      cache.set(obj, temp);
+      for (const key in obj) {
+        //递归拷贝 将缓存区传给下一个递归
+        temp[key] = deepCopy(obj[key], cache);
+      }
+      return temp;
+    }
+    //如果不是对象是个单一类型的值直接返回
+    return obj;
+  }
+  ```
