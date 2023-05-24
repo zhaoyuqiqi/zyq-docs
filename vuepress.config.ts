@@ -1,83 +1,89 @@
-import { defineUserConfig, defaultTheme } from "vuepress";
-import { searchPlugin } from "@vuepress/plugin-search";
-const baseAddress = "/zyq-docs/";
+import { defineUserConfig, defaultTheme } from 'vuepress';
+import { searchPlugin } from '@vuepress/plugin-search';
+const baseAddress = '/zyq-docs/';
 export default defineUserConfig({
-  lang: "zh-CN",
-  title: "爱哭的赵一一",
+  lang: 'zh-CN',
+  title: '爱哭的赵一一',
   description:
-    "爱哭的赵一一前端个人学习站点，总结个人学习历程与经验，介绍两大框架React、Vue和各类常见算法（排序算法、最长递增子序列、优先队列）等等。以及前端开发中的奇技淫巧，帮助你提升自身能力获取高薪工作",
-  head: [
-    ["link", { rel: "icon", href: `${baseAddress}images/header-logo.jpg` }],
-  ],
+    '爱哭的赵一一前端个人学习站点，总结个人学习历程与经验，介绍两大框架React、Vue和各类常见算法（排序算法、最长递增子序列、优先队列）等等。以及前端开发中的奇技淫巧，帮助你提升自身能力获取高薪工作',
+  head: [['link', { rel: 'icon', href: `${baseAddress}images/header-logo.jpg` }]],
   theme: defaultTheme({
     navbar: [
-      { text: "主页", link: "/" },
+      { text: '主页', link: '/' },
       {
-        text: "Vue",
-        link: "/vue/",
+        text: 'Vue',
+        link: '/vue/',
       },
       {
-        text: "React",
-        link: "/react/",
+        text: 'React',
+        link: '/react/',
       },
       {
-        text: "Typescript",
-        link: "/typescript/",
+        text: 'Typescript',
+        link: '/typescript/',
       },
       {
-        text: "Git",
-        link: "/git/",
+        text: 'Git',
+        link: '/git/',
       },
       {
-        text: "奇技淫巧",
+        text: '数据库',
+        link: '/database/',
+      },
+      {
+        text: 'node',
+        link: '/node/',
+      },
+      {
+        text: '奇技淫巧',
         children: [
           {
-            text: "Promise",
-            link: "/skill/promise/",
+            text: 'Promise',
+            link: '/skill/promise/',
           },
           {
-            text: "杂七杂八",
-            link: "/skill/messy/",
+            text: '杂七杂八',
+            link: '/skill/messy/',
           },
         ],
       },
       {
-        text: "算法",
+        text: '算法',
         children: [
           {
-            text: "二分法",
-            link: "/algorithm/binnary/",
+            text: '二分法',
+            link: '/algorithm/binnary/',
           },
           {
-            text: "双指针",
-            link: "/algorithm/double-pointer/",
+            text: '双指针',
+            link: '/algorithm/double-pointer/',
           },
           {
-            text: "动态规划",
-            link: "/algorithm/dp/",
+            text: '动态规划',
+            link: '/algorithm/dp/',
           },
           {
-            text: "二叉树",
-            link: "/algorithm/binnary-tree/",
+            text: '二叉树',
+            link: '/algorithm/binnary-tree/',
           },
           {
-            text: "排序算法",
-            link: "/algorithm/sort/",
+            text: '排序算法',
+            link: '/algorithm/sort/',
           },
           {
-            text: "堆",
-            link: "/algorithm/heap/",
+            text: '堆',
+            link: '/algorithm/heap/',
           },
           {
-            text: "LRU缓存",
-            link: "/algorithm/lru/",
+            text: 'LRU缓存',
+            link: '/algorithm/lru/',
           },
         ],
       },
-      { text: "B站主页", link: "https://space.bilibili.com/279282087" },
+      { text: 'B站主页', link: 'https://space.bilibili.com/279282087' },
       {
-        text: "掘金主页",
-        link: "https://juejin.cn/user/3447712806348557/posts",
+        text: '掘金主页',
+        link: 'https://juejin.cn/user/3447712806348557/posts',
       },
       // 下拉列表的配置
       // {
@@ -88,9 +94,9 @@ export default defineUserConfig({
       //   ],
       // },
     ],
-    logo: "/images/header-logo.jpg",
-    notFound: ["页面找不到啦~  去首页看看吧!"],
-    backToHome: "返回首页",
+    logo: '/images/header-logo.jpg',
+    notFound: ['页面找不到啦~  去首页看看吧!'],
+    backToHome: '返回首页',
   }),
   base: baseAddress,
   plugins: [searchPlugin()],
