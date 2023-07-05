@@ -97,3 +97,32 @@ export function deepCopy(obj: any, cache = new WeakMap()) {
   //如果不是对象是个单一类型的值直接返回
   return obj;
 }
+
+export function arr2tree(arr: any[], pid = 0) {
+  const tree: any[] = [];
+  for (const node of arr) {
+    if (node.pid === pid) {
+      const children = arr2tree(arr, node.id);
+      node.children = children;
+      tree.push(node);
+    }
+  }
+  return tree;
+}
+
+export function arr2tree2(arr, rootId = 0) {
+  const map = {};
+  const tree: any[] = [];
+  for (const node of arr) {
+    map[node.id] = { ...node, children: [] };
+  }
+  for (const cur of arr) {
+    const node = map[cur.id];
+    if (node.pid === rootId) {
+      tree.push(node);
+    } else {
+      map[node.pid].children.push(node);
+    }
+  }
+  return tree;
+}
