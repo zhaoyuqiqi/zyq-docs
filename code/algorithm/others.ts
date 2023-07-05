@@ -72,14 +72,10 @@ const p = new Proxy(obj, {
     return Reflect.set(target, key, value);
   },
   get(target, key) {
-    console.log(target);
-    console.log(key);
     // 订阅操作
     return Reflect.get(target, key);
   },
 });
-
-console.log(p.name);
 
 export function deepCopy(obj: any, cache = new WeakMap()) {
   if (typeof obj === 'object' && obj !== null) {
