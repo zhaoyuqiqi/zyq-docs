@@ -7,7 +7,7 @@
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "test": "jest --watch",
-    "start": "nodemon  ./code/algorithm/thisBind.ts",
+    "start": "nodemon  ./code/algorithm/promise.ts",
     "prepare": "husky install",
     "lint": "prettier --check .",
     "format": "prettier --write ."
