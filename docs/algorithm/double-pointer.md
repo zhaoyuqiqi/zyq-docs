@@ -124,3 +124,79 @@ function threeSum(nums: number[]): number[][] {
   return res;
 }
 ```
+
+## 合并区间
+
+以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi] 。请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+
+示例 1：
+
+输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+输出：[[1,6],[8,10],[15,18]]
+解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+示例 2：
+
+输入：intervals = [[1,4],[4,5]]
+输出：[[1,5]]
+解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
+
+提示：
+
+1 <= intervals.length <= 10^4
+intervals[i].length == 2
+0 <= starti <= endi <= 10^4
+
+- 我们的思路如下：
+  1. 既然是合并两个区间，那么我可以先对区间左侧的元素进行排序，得到一个以单个区间左侧元素递增的二维数组，然后我们遍历这个数组，定义两个指针，`left`和`right`，当当前元素的左侧小于等于我们之前区间的右侧值那么就可以合并这两个区间，其区间就是`[left,Math.max(cur.left,right)]`,否则就是不可合并区间，我们直接将`[left,right]`也就是上一次的区间放入结果数组中即可；
+  2. 第二种方法也是先进行排序，然后当结果数组为空时直接将第一个区间加入结果数组，当当前元素的左侧大于结果数组最后一个区间的右侧时此时是不可合并的，直接放入结果数组即可，否则就是可合并的，合并时需要更新结果数组的最后一项的右侧区间即可。
+- 代码实现如下：
+
+1. 方法一使用双指针记录
+
+```ts
+function merge(intervals: number[][]): number[][] {
+  intervals.sort((a, b) => a[0] - b[0]);
+  const res: number[][] = [];
+  // 当前左指针
+  let leftVal = intervals[0][0];
+  // 当前右指针
+  let rightVal = intervals[0][1];
+  for (let i = 1; i < intervals.length; i++) {
+    const cur = intervals[i];
+    // 可合并
+    if (cur[0] <= rightVal) {
+      rightVal = Math.max(cur[1], rightVal);
+    } else {
+      // 不可合并时直接添加上一个进去
+      res.push([leftVal, rightVal]);
+      leftVal = cur[0];
+      rightVal = cur[1];
+    }
+  }
+  // 把最后一次的值添加进去即可
+  res.push([leftVal, rightVal]);
+  return res;
+}
+```
+
+2. 方法二使用结果数组中最后一个值记录
+
+```ts
+function merge(intervals: number[][]): number[][] {
+  const res: number[][] = [];
+  // 排序
+  intervals.sort((a, b) => a[0] - b[0]);
+  for (const item of intervals) {
+    const resultLastValueOfRight = res[res.length - 1][1];
+    // 如果当前结果为空（添加首次第一个区间）或者当前值的左区间大于结果数组中的最后一个值的区间右侧的值就表示不可合并直接添加进去即可
+    if (!res.length || item[0] > resultLastValueOfRight) {
+      res.push(item);
+    } else {
+      // 这里就是可合并的
+      // 更新结果数组中的最后一个值的右侧区间的值即可
+      resultLastValueOfRight = Math.max(item[1], resultLastValueOfRight);
+    }
+  }
+  return res;
+}
+```
