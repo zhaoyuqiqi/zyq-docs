@@ -395,7 +395,7 @@ function Student(name, age) {
 
 Student.prototype = new Person('foo', 18);
 
-const stu = new Person('bar', 17);
+const stu = new Student('bar', 17);
 stu.sayHello();
 ```
 
@@ -415,9 +415,6 @@ stu.sayHello();
 function Person(name, age) {
   this.name = name; // 父类中存在一份
   this.age = age; // 父类中存在一份
-  this.sayHello = function () {
-    console.log(`hello,${this.name}`);
-  };
 }
 function createObj(Parent) {
   // return Object.create(Parent.prototype); 可以直接返回该对象，Object.create方法会创建一个对象，并让其的隐式原型指向参数中的值
@@ -427,14 +424,14 @@ function createObj(Parent) {
   return new F();
 }
 Student.prototype = createObj(Person);
+Student.prototype.sayHello = function () {
+  console.log(`hello,${this.name}`);
+};
 function Student(name, age) {
   // 重点是在子类中调用父类的构造函数，并绑定this
   Person.call(this, name, age);
 }
-
-Student.prototype = new Person('foo', 18);
-
-const stu = new Person('bar', 17);
+const stu = new Student('bar', 17);
 stu.sayHello();
 ```
 
