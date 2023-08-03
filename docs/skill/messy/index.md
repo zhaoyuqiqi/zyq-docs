@@ -339,3 +339,105 @@ class PubAndSub {
   ```
   如上述`Person`类中，`Person.prototype.constructor === Person`的结果是`true`，内存图如下所示：
   ![原型链](/images/prototype.webp)
+
+## 继承
+
+在 es5 中实现继承使用到的知识非常多，有原型链继承，盗用构造函数继承，寄生类继承，组合继承等等。
+
+### 原型链继承
+
+```ts
+function Person(name, age) {
+  this.name = name; // 父类中存在一份
+  this.age = age; // 父类中存在一份
+  this.sayHello = function () {
+    console.log(`hello,${this.name}`);
+  };
+}
+
+function Student(name, age) {
+  this.name = name; // 子类中存在一份
+  this.age = age; // 子类中存在一份
+}
+
+Student.prototype = new Person('foo', 18);
+
+const stu = new Person('bar', 17);
+stu.sayHello();
+```
+
+- 原理是将父类的实例赋值到子类的显式原型上，因为查找顺序是先查找子类实例自身，然后查找子类实例隐式原型，又因为`new`关键字会将显式原型绑定到实例的隐式原型上，因此查找的实例隐式原型其实就是构造函数`Person`的显式原型，因此可以在子类上读取到父类的方法。
+
+- 缺点也很明显，我们无法继承父类的属性，因为父类一旦实例化，内部的属性就已经确定了，只能继承父类的方法，若想使用属性则只能在子类里实现。也就是说我们想要继承的属性必须要存在两份，子类中一份，父类中也存在一份。
+
+在以上缺点的基础上出现了盗用构造函数继承。
+
+### 盗用构造函数继承
+
+盗用构造函数继承主要解决的问题是在子类中无法继承父类的属性而出现的。
+原理如下：
+
+```ts
+function Person(name, age) {
+  this.name = name; // 父类中存在一份
+  this.age = age; // 父类中存在一份
+  this.sayHello = function () {
+    console.log(`hello,${this.name}`);
+  };
+}
+
+function Student(name, age) {
+  // 重点是在子类中调用父类的构造函数，并绑定this
+  Person.call(this, name, age);
+  // this.name = name;  子类中存在的一份可以删除
+  // this.age = age; 子类中存在的一份可以删除
+}
+
+Student.prototype = new Person('foo', 18);
+
+const stu = new Person('bar', 17);
+stu.sayHello();
+```
+
+- 重点是在子类的方法中通过`call`或者`apply`调用父类的构造函数并绑定`this`，因此，在父类中的`this.name = name`,实际上是将`name`绑定到了当前的子类上。此时父类的构造函数被调用两次，其中第一次调用时将父类的实例赋值给子类的显式原型，此时也是有一份父类的属性保存在子类构造函数的的显式原型上的，第二次是将子类的实例自身上通过`call`或`apply`绑定上父类构造函数中声明的属性，`因为查找顺序是有限在子类实例自身上查找，查找不到再去子类实例的隐式原型也就是子类构造函数的显式原型上去查找`，所以相当于是子类实例上的属性覆盖了子类隐式原型上赋值的父类实例的属性。
+- 该方法也有一个缺点，缺点是父类的构造函数被调用了两次。
+  1. 第一次是父类实例化后赋值给子类构造函数的显式原型。
+  2. 第二次是盗用构造函数时通过`call`或`apply`又调用了一次。
+
+为了解决上述的父类构造函数调用两次的问题，出现了寄生继承与原型式集成。
+
+### 寄生继承与原型式集成
+
+- 寄生继承的原理是构造一个对象，让他的隐式原型指向父类构造函数的显式原型，然后将该对象作为子类构造函数的显式原型。
+  原理如下：
+
+```ts
+function Person(name, age) {
+  this.name = name; // 父类中存在一份
+  this.age = age; // 父类中存在一份
+  this.sayHello = function () {
+    console.log(`hello,${this.name}`);
+  };
+}
+function createObj(Parent) {
+  // return Object.create(Parent.prototype); 可以直接返回该对象，Object.create方法会创建一个对象，并让其的隐式原型指向参数中的值
+  // 下面是兼容性更好的方法再2006年提出
+  function F() {}
+  F.prototype = Parent.prototype;
+  return new F();
+}
+Student.prototype = createObj(Person);
+function Student(name, age) {
+  // 重点是在子类中调用父类的构造函数，并绑定this
+  Person.call(this, name, age);
+}
+
+Student.prototype = new Person('foo', 18);
+
+const stu = new Person('bar', 17);
+stu.sayHello();
+```
+
+- 上面使用了`Object.create()`方法，该方法会创建一个对象，并将该对象的隐式原型设置为传入的第一个参数，因此我们创建出来的对象的隐式原型就是父类构造函数的显式原型，因此将其作为子类构造函数的显式原型即可实现方法的继承。
+- 属性的继承我们还是使用了盗用构造函数的方法，与上述不同的是，本次只调用了一次父类的构造函数，因此父类上定义的属性只存在一份，也就是绑定在子类的实例上。
+  行文至此，在 es5 中的继承方式基本讲述完毕，相比之下最优的继承方案使用了原型链、盗用构造函数、原型式继承、寄生继承这四种才得到一个相对完美的继承方案。
