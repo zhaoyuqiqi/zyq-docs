@@ -338,4 +338,4 @@ class PubAndSub {
   }
   ```
   如上述`Person`类中，`Person.prototype.constructor === Person`的结果是`true`，内存图如下所示：
-  ![原型链](/images/prototype.png)
+  ![原型链](/images/prototype.webp)
