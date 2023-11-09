@@ -80,10 +80,10 @@ export default defineUserConfig({
           },
         ],
       },
-      // {
-      //   text: '面试',
-      //   link: '/interview/',
-      // },
+      {
+        text: '面试',
+        link: '/interview/',
+      },
       { text: 'B站主页', link: 'https://space.bilibili.com/279282087' },
       {
         text: '掘金主页',
