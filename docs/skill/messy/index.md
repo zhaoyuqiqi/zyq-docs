@@ -467,3 +467,41 @@ navigator.sendBeacon('/api/user', json);
 ```
 
 需要注意的是，navigator.sendBeacon()方法的使用前提是浏览器支持该方法。如果不支持，则需要使用其他方式将数据发送出去。另外，该方法只能判断出数据是否放入浏览器任务队列，不能判断出是否发送成功。因此，在使用时需要确保浏览器支持 navigator.sendBeacon 方法，并正确处理发送失败的情况。
+
+## css transform
+
+- 什么是 css transform？
+  - css transform 是用来在 web 中进行缩放、平移、旋转、倾斜的属性。
+- transform 原理是什么？
+
+  - transform 的变换就是一个矩阵对于一个点的变换。
+
+    - `transform: matrix(scaleX,skewY,skewX,scaleY,△x,△y);`
+
+  - 我们知道一个平面是由无数个点组成的，只要我们在平面中将点进行移动就可以模拟出整个平面的移动。此时我们需要引出一个名词“矩阵”，在大学时我们学过线性代数，还记得矩阵的乘法规则。
+
+  1. 第一个矩阵的列数必须等于第二个矩阵的行数。
+  2. 相乘后的矩阵的行数等于第一个矩阵的行数，列数等于第二个矩阵的列数。
+  3. 相乘后的矩阵的元素等于第一个矩阵的行的元素与第二个矩阵列的对应元素的积之和。
+     多个线性变换依次作用，则是将矩阵依次相乘。但是 matrix 还有后面两个参数，如果加上这两个参数就变成 2 * 3 的矩阵，这是无法相乘的。所以为了方便计算我们把它拼凑成 3*3 的矩阵
+     所以一个`matrix(scaleX,skewY,skewX,scaleY,translateX,translateY);`表示为矩阵就是
+     ![Alt text](/images/image.png)
+
+- transform 的接收参数的生效顺序是怎样的？
+  - transform 的参数表示一个矩阵如下，此时再将该矩阵与平面中的各个点相乘则得到新的各个点的坐标，此时平面也就进行了 2d 变换
+    ![Alt text](/images/image3.png)
+- 如上图，在进行变换时，我们如果先写`translate`则出现的变换时符合我们直觉的，如果先写`scale`则变换后的`translate`就会变为原来的 scale 倍，所以我们一般在有位移的场景下先写`translate`。
+- 说到底无论我们先写什么最后都会计算出一个矩阵然后将该矩阵应用在平面的每个点上。当然我们也可以直接操作该矩阵。此时的位移与缩放都是正常的。
+
+## 以鼠标位置为圆心缩放能力实现
+
+- 思路：先以左上角或某个点为圆心进行缩放然后将其进行平移即可
+如下图中的 △X 就是需要平移的偏移量，只需要求得该值即可进行缩放的偏移。直接将其代入到`transform: matrix(scaleX,skewY,skewX,scaleY,△x,△y);`即可。
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FVA3iCp0c7QZR3Mgp4eETXM%2F%25E6%25A0%25B9%25E6%258D%25AE%25E9%25BC%25A0%25E6%25A0%2587%25E4%25BD%258D%25E7%25BD%25AE%25E7%25BC%25A9%25E6%2594%25BE%25E8%2583%25BD%25E5%258A%259B%3Ftype%3Ddesign%26node-id%3D0%253A1%26mode%3Ddesign%26t%3DYJQgrY9d0DIoFOhc-1" allowfullscreen></iframe>
+
+## 记一次性能优化
+
+- 在业务场景中，有个场景是需要根据鼠标滚轮进行缩放，场景是使用 dom 构建的，其中 dom 树的节点数量是由设计稿的复杂度决定的，一般场景下可以有 3000+个节点，此时要对这么多的节点进行缩放操作非常耗费性能极其卡顿。
+- 解决方案是在缩放过程中将 dom 树的上千个节点摘取下来，等到缩放完成后再将这些节点放置上去，此时缩放的时候只有外层节点在缩放，性能不受设计稿复杂度的影响，以下是优化前后的性能对比图。
+  ![优化前](/images/pre.png)
+  ![优化后](/images/post.png)
