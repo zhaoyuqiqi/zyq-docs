@@ -35,6 +35,10 @@ export default defineUserConfig({
         link: '/node/',
       },
       {
+        text: 'CI/CD',
+        link: '/ci-cd/',
+      },
+      {
         text: '奇技淫巧',
         children: [
           {
