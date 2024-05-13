@@ -1,0 +1,1 @@
+const a=JSON.parse('{"key":"v-274a102e","path":"/algorithm/backtrack.html","title":"回溯法","lang":"zh-CN","frontmatter":{},"headers":[],"git":{"updatedTime":1679121950000,"contributors":[{"name":"zhao77","email":"zhaoyuqi.77@bytedance.com","commits":1}]},"filePathRelative":"algorithm/backtrack.md"}');export{a as data};
