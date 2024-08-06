@@ -78,3 +78,28 @@ function App() {
   setTimout(() => navigate('/home'));
 }
 ```
+
+### 路由配置
+
+我们可以将路由的配置信息抽取出来，使用`useRoutes`来将配置渲染成组件，示例如下：
+
+```tsx
+import {useRoutes} from "react-router-dom"
+const routes = [
+  { path: '/home', element: <Home /> },
+  {
+    path: '/about',
+    element: <About />,
+    children: [
+      path: 'profile',
+      element: <Profile/>
+    ]
+  },
+];
+
+const App:FC<Props> =  props=> {
+  return <Layout>
+    {useRoutes(routes)}
+  </Layout>
+}
+```

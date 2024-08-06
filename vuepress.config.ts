@@ -39,6 +39,10 @@ export default defineUserConfig({
         link: '/ci-cd/',
       },
       {
+        text: '正则',
+        link: '/re/',
+      },
+      {
         text: '奇技淫巧',
         children: [
           {
