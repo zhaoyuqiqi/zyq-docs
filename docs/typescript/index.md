@@ -101,7 +101,9 @@ type B = N2S<100>;
   - 我们实现 MyReturnType 类型，其中传入泛型 T，T 受函数类型的约束，当 T 进入条件判断为 true 分支时，T 的返回值是我们的推断类型 S，此时我们将 S 返回即可，当我们真实的类型传入后，如果条件判断走到了 true 分支那么我们的推断类型 S 就是我们真实的函数的类型。
 
   ```ts
-  type MyReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer S ? S : never;
+  type MyReturnType<T extends (...args: any[]) => any> = T extends (...args: any[]) => infer S
+    ? S
+    : never;
   ```
 
 ### Record
@@ -142,3 +144,264 @@ type B = N2S<100>;
   type Test = MyOmit<Obj, 'age'>;
   type Test2 = MyOmit2<Obj, 'age'>;
   ```
+
+## 在 node 项目中使用 ts
+
+### 有时候我们需要在 node 项目中使用 ts 来运行我们的项目，例如开发过程使用`nodemon`和`ts-node`来运行我们的项目，有以下几点需要注意：
+
+- 此时我们一定要注意不要在`package.json`中增加`type`字段否则会报错不兼容。
+- 在 ts-config 中需要配置`module`为`commonjs`，`moduleResolution`不需要配置。
+
+### 配置全局类型声明
+
+倘若我们需要需要配置全局的类型，我们可以在任意的地方配置`.d.ts`文件，如果文件没有使用`export`和`import`那么该声明文件会被当做全局声明文件，可以直接被编辑器读取，我们的 vscode 也是可以识别的。但是识别归识别，我们使用`nodemon` + `ts-node`仍然无法运行我们的项目，我们的`ts-node`无法读取到全局类型，此时需要我们在`tsconfig`中对`ts-node`进行配置如下：
+
+```json
+{
+  "compilerOptions": {
+    // ...省略部分配置...
+  },
+  "includes": [
+    // 这里是文件列表
+  ],
+  "ts-node": {
+    "files": true
+  }
+}
+```
+
+`ts-node`中的`files`会加载`tsconfig`中的 files 字段与 includes 字段，其中 files 需要显示声明哪些文件不方便使用，可以不去声明，我们可以直接声明 includes 列表，该列表可以使用 glob 匹配，使用起来方便。在配置完这些后 ts-node 就可以正常使用了。
+如果
+
+### 使用别名
+
+ts 类型的别名我们只需要在 tsconfig 中配置 path 字段即可，但是我们配置后 ts-node 编译时仍然不认识别名，我们需要使用`tsconfig-paths`来做，首先安装该 npm 包，然后使用时一行代码即可`nodemon --exec \"ts-node -r tsconfig-paths/register\" src/main.ts`
+查看下 ts-node 的官方文档比较好
+
+## 前端 Typescript 组件
+
+### 背景
+
+许多时候我们在编写 ts 代码或组件时会遇到许多问题，如：
+
+- 场景 1：我有一个组件接收两个属性，一个为`type`另一个为`data`，且当`type`为`string`时，`data`为`number`；当`type`为`number`时，`data`为`string`
+- 场景 2：我有一个列表，列表中存储的是组件信息，每个组件信息各不相同，我想在编写该列表时可以自动根据填写的 type 推断出我需要的组件类型
+
+### 场景一：
+
+- ```html
+  <!-- 当传递type为foo时，data是数字 -->
+  <Test type="foo" :data="1" />
+  <!-- 传递type为bar时，data为字符串  -->
+  <Test type="bar" data="1" />
+  ```
+
+是不是要声明两个组件呢？如果不声明两个组件应该怎么写组件呢？
+
+- 方法一：泛型
+
+- ```vue
+  <!-- test.vue -->
+  <script lang="ts">
+  type Type = 'foo' | 'bar';
+  </script>
+
+  <script setup lang="ts" generic="T extends Type">
+  interface Props {
+    type: T;
+    data: T extends 'foo' ? number : T extends 'bar' ? string : never;
+  }
+  defineProps<Props>();
+  </script>
+
+  <template></template>
+  ```
+
+万一有多个 type 的值呢？连续的三元表达式？
+
+- 方法二：泛型+infer
+
+  `infer` 最早出现在此 PR 中，`表示在 extends 条件语句中待推断的类型变量`。
+  简单示例如下：
+
+- ```ts
+  type ParamType<T> = T extends (arg: infer P) => any ? P : T;
+  ```
+
+- 在这个条件语句 `T extends (arg: infer P) => any ? P : T` 中，`infer P` 表示待推断的函数参数。
+- 整句表示为：`如果 T 能赋值给 (arg: infer P) => any，则结果是 (arg: infer P) => any 类型中的参数 P，否则返回为 T。`
+- ```ts
+  interface User {
+    name: string;
+    age: number;
+  }
+
+  type Func = (user: User) => void;
+
+  type Param = ParamType<Func>; // Param = User
+  type AA = ParamType<string>; // string
+
+  看下内置的工具类型：ReturnType
+
+  ```
+
+- ```ts
+  type ReturnType<T> = T extends (...args: any[]) => infer P ? P : any;
+  ```
+
+  通俗一点讲：`infer` 表示未来真实传递的类型，在声明时可认为占位符或形参，配合泛型使用。
+  请看下列代码
+  test2.vue
+
+- ```vue
+  <script lang="ts">
+  type Type = 'foo' | 'bar';
+  </script>
+  <script setup lang="ts" generic="T extends Type">
+  // 额外增加个Data
+  interface Data {
+    foo: number;
+    bar: string;
+  }
+  interface Props {
+    type: T;
+    // 只有这一块有改动
+    data: T extends infer U ? (U extends Type ? Data[U] : never) : never;
+  }
+  defineProps<Props>();
+  </script>
+  <template></template>
+  ```
+
+- 方法三 不使用泛型
+  首先我们学习 `type`，`type` 可以定义联合类型，交叉类型等
+
+- ```ts
+  type Int = number | string;
+
+  interface Bird {
+    name: string;
+    age: number;
+    fly(): void;
+  }
+  interface Dog {
+    name: string;
+    age: number;
+    run(): void;
+  }
+
+  type X = Bird & Dog;
+
+  // x 必须既包含 Bird 也包含 Dog 的属性与方法
+  ```
+
+我们还要知道
+
+- ```ts
+  type Arr = [string, number, boolean];
+
+  type U1 = Arr[0] | Arr[1] | Arr[2]; // string | number | boolean
+  type U2 = Arr[0 | 1 | 2]; // string | number | boolean 相当于 Arr[0] | Arr[1] | Arr[2]
+
+  interface Foo {
+    a: string;
+    b: number;
+    c: boolean;
+  }
+  type F1 = Foo['a'] | Foo['b'] | Foo['c'];
+  type F2 = Foo['a' | 'b' | 'c']; // string | number | boolean 相当于 Foo['a'] | Foo['b'] | Foo['c'];
+  ```
+
+test3.vue
+
+- ```vue
+  <script setup lang="ts">
+  type Type = 'foo' | 'bar';
+
+  // 额外增加个Data
+  interface Data {
+    foo: number;
+    bar: string;
+  }
+
+  type Props = {
+    // T为 foo 或者 bar
+    [T in Type]: {
+      type: T;
+      data: Data[T];
+    };
+    //上面的代码与下面的两个等价
+    // foo:{
+    //  type: 'foo',
+    //  data: Data['foo']
+    // },
+    // bar:{
+    //  type: 'bar',
+    //  data: Data['bar']
+    // }
+  }[Type];
+  defineProps<Props>();
+  </script>
+
+  <template></template>
+  ```
+
+![alt text](/images/typescript.png)
+
+### 场景二：
+
+我想有个 list 内部存储 Input 或者 Select，通过 type 区分，在我输入的时候有提示，不合法时有类型报错
+
+```ts
+type ComponentType = 'input' | 'select';
+
+interface Input {
+  placeholder: string;
+  value: string;
+}
+
+interface Option {
+  label: string;
+  value: string;
+}
+interface Select {
+  placeholder: string;
+  value: string;
+  options: Option[];
+}
+```
+
+思路一：
+我们最容易想到的就是直接 Input 和 Select 的联合类型即可如下
+
+```ts
+interface Component {
+  type: ComponentType;
+  props: Input | Select;
+}
+
+type List = Component[];
+```
+
+这样真的符合预期吗？
+![alt text](/images/typescript2.png)
+可以看到我的 type 为 select 的组件没有传递必传参数 options 仍然没有报错
+故该方案不可行
+
+方案二
+
+```ts
+interface Components {
+  Select: Select;
+  Input: Input;
+}
+
+type Component = {
+  [T in ComponentType]: {
+    type: T;
+    props: Components[Capitalize<T>];
+  };
+}[ComponentType];
+```
+
+![alt text](/images/typescript3.png)
