@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-2e25198a","path":"/database/","title":"数据库","lang":"zh-CN","frontmatter":{},"headers":[{"level":2,"title":"基本语句","slug":"基本语句","link":"#基本语句","children":[]}],"git":{"updatedTime":1684922980000,"contributors":[{"name":"zhaoyuqiqi","email":"1940988349@qq.com","commits":1}]},"filePathRelative":"database/index.md"}');export{e as data};
